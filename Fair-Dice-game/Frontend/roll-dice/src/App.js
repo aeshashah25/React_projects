@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function DiceGame() {
   const [betAmount, setBetAmount] = useState(100);
@@ -22,9 +23,9 @@ export default function DiceGame() {
       });
       setRollResult(response.data.roll);
       setHash(response.data.hash);
-      
+
       setBalance((prevBalance) => {
-        if ((response.data.roll %2)=== 0) {
+        if (response.data.roll % 2 === 0) {
           return prevBalance + betAmount * 2; // Winning gives 2x payout
         } else {
           return prevBalance - betAmount; // Losing deducts bet amount
@@ -39,8 +40,10 @@ export default function DiceGame() {
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
       <h1 className="text-4xl font-bold text-fuchsia-500 mb-6">Dice Game</h1>
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
-        <p className="text-lg font-semibold mb-2">Balance: <span className="text-green-400">${balance}</span></p>
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center flex flex-col items-center">
+        <p className="text-lg font-semibold mb-2">
+          Balance: <span className="text-green-400">${balance}</span>
+        </p>
         <input
           type="number"
           value={betAmount}
@@ -48,13 +51,20 @@ export default function DiceGame() {
           className="mt-4 p-2 text-black rounded w-full"
           placeholder="Enter bet amount"
         />
-        <button
+        <motion.div
+          className="mt-6 cursor-pointer hover:scale-110 transition"
+          whileTap={{ scale: 0.8 }}
           onClick={rollDice}
-          className="mt-4 bg-magenta-600 hover:bg-magenta-700 text-white font-bold py-2 px-4 rounded w-full"
-          disabled={loading}
         >
-          {loading ? "Rolling..." : "Roll Dice"}
-        </button>
+          <img
+            src="/dice.png"
+            alt="Dice"
+            width={96}
+            height={96}
+            className="mt-6 cursor-pointer hover:scale-110 transition"
+            onClick={rollDice}
+          />
+        </motion.div>
         {rollResult !== null && (
           <motion.div
             className="mt-6 text-2xl font-bold"
@@ -64,7 +74,9 @@ export default function DiceGame() {
             🎲 Dice Roll: {rollResult}
           </motion.div>
         )}
-        {hash && <p className="mt-2 text-sm break-all text-gray-400">Hash: {hash}</p>}
+        {hash && (
+          <p className="mt-2 text-sm break-all text-gray-400">Hash: {hash}</p>
+        )}
       </div>
     </div>
   );
